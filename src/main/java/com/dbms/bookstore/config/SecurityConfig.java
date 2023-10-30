@@ -43,6 +43,8 @@ public class SecurityConfig {
 							.requestMatchers(mvc.pattern("/")).permitAll()
 							.requestMatchers(mvc.pattern( "/shop/**")).permitAll()
 							.requestMatchers(mvc.pattern("/register/**")).permitAll()
+							.requestMatchers(mvc.pattern("/images/**")).permitAll()
+							.requestMatchers(mvc.pattern("/productImages/**")).permitAll()
 							.requestMatchers(mvc.pattern("/admin")).hasRole("ADMIN")
 					    .anyRequest().authenticated()
 					    .and()
