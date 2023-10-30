@@ -1,28 +1,40 @@
 package com.dbms.bookstore.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetail extends User implements UserDetails{
+	
+	public CustomUserDetail(User user) {
+		super(user);
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return null;
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		super.getRoles().forEach(role ->{
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		});
+		return authorities;
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return null;
+		
+		return super.getEmail();
 	}
 	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return null;
+		return super.getPassword();
 	}
 
 	@Override
