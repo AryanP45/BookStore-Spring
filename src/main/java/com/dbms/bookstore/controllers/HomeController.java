@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.dbms.bookstore.dao.ProductDao;
+import com.dbms.bookstore.global.GlobalData;
 import com.dbms.bookstore.model.Product;
 import com.dbms.bookstore.services.CategoryService;
 import com.dbms.bookstore.services.ProductService;
@@ -20,11 +21,13 @@ public class HomeController {
 	
 	@GetMapping({"/","/home"})
 	public String home(Model model) {
+		model.addAttribute("cartCount",GlobalData.cart.size());
 		return "index";
 	}
 	
 	@GetMapping("/shop")
 	public String shop(Model model) {
+		model.addAttribute("cartCount",GlobalData.cart.size());
 		model.addAttribute("categories",categoryService.getAllCategories());
 		model.addAttribute("products",productService.getAllProduct());
 		return "shop";
@@ -32,6 +35,7 @@ public class HomeController {
 	
 	@GetMapping("/shop/category/{id}")
 	public String shopByCategory(@PathVariable int id,Model model) {
+		model.addAttribute("cartCount",GlobalData.cart.size());
 		model.addAttribute("categories",categoryService.getAllCategories());
 		model.addAttribute("products",productService.getAllProductsByCategoryId(id));
 		return "shop";
@@ -39,19 +43,21 @@ public class HomeController {
 	
 	@GetMapping("/shop/viewproduct/{id}")
 	public String viewProduct(@PathVariable Long id,Model model) {
+		model.addAttribute("cartCount",GlobalData.cart.size());
 		
-		Product product=productService.getProductById(id).get();
-		ProductDao productDao = new ProductDao();
-		productDao.setId(id);
-		productDao.setName(product.getName());
-		productDao.setDescription(product.getDescription());
-		productDao.setWeight(product.getWeight());
-		productDao.setCategoryId(product.getCategory().getId());
-		productDao.setPrice(product.getPrice());
-		productDao.setImageName(product.getImageName());
+//		Product product=productService.getProductById(id).get();
+//		ProductDao productDao = new ProductDao();
+//		productDao.setId(id);
+//		productDao.setName(product.getName());
+//		productDao.setDescription(product.getDescription());
+//		productDao.setWeight(product.getWeight());
+//		productDao.setCategoryId(product.getCategory().getId());
+//		productDao.setPrice(product.getPrice());
+//		productDao.setImageName(product.getImageName());
 		
 		model.addAttribute("product",productService.getProductById(id).get());
 		return "viewProduct";
 	}
+	
 	
 }
