@@ -99,13 +99,12 @@ public class User {
 		this.password = password;
 	}
 
-
-	List<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
 
-	void setRoles(List<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 
