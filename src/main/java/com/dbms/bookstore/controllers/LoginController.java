@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.dbms.bookstore.global.GlobalData;
 import com.dbms.bookstore.model.Role;
 import com.dbms.bookstore.model.User;
 import com.dbms.bookstore.repository.RoleRepository;
@@ -32,6 +33,7 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public String login() {
+		GlobalData.cart.clear();
 		return "login";
 	}
 
@@ -42,8 +44,8 @@ public class LoginController {
 	
 	@PostMapping("/register")
 	public String registerpost(@ModelAttribute("user")User user,HttpServletRequest httpServletRequest)throws ServletException {
-		
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		String pass = user.getPassword();
+		user.setPassword(bCryptPasswordEncoder.encode(pass));
 		List<Role> roles = new ArrayList<>();
 		roles.add(roleRepository.findById(2).get());
 		user.setRoles(roles);
