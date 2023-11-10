@@ -16,15 +16,15 @@ import lombok.Data;
 @Entity
 @Table(name = "Roles")
 public class Role {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
-	@Column(nullable = false,unique = true)
+
+	@Column(nullable = false, unique = true)
 	@NotEmpty
 	private String name;
-	
+
 	@ManyToMany(mappedBy = "roles")
 	private List<User> users;
 
@@ -51,9 +51,5 @@ public class Role {
 	void setUsers(List<User> users) {
 		this.users = users;
 	}
-	
-	
-	
-	
 
 }
