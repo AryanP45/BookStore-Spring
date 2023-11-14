@@ -1,6 +1,8 @@
 package com.dbms.bookstore.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,16 @@ public class CartController {
 	@Autowired
 	ProductService productService;
 	
+	@GetMapping("/cart")
+	public String cart(Model model) {
+		model.addAttribute("cartCount",GlobalData.cart.size());
+		model.addAttribute("total",GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
+		model.addAttribute("cart",GlobalData.cart);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Cart page "+authentication.getName());
+		return "cart";
+	}
+	
 	@GetMapping("/addToCart/{id}")
 	public String addToCart(@PathVariable Long id) {
 		GlobalData.cart.add(productService.getProductById(id).get());
@@ -22,13 +34,6 @@ public class CartController {
 		return "redirect:/shop";
 	}
 	
-	@GetMapping("/cart")
-	public String cart(Model model) {
-		model.addAttribute("cartCount",GlobalData.cart.size());
-		model.addAttribute("total",GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
-		model.addAttribute("cart",GlobalData.cart);
-		return "cart";
-	}
 	
 	@GetMapping("/cart/removeItem/{index}")
 	public String cartItemRemove(@PathVariable int index) {

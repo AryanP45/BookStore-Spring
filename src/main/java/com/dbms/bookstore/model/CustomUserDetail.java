@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class CustomUserDetail extends User implements UserDetails{
-	
+public class CustomUserDetail extends User implements UserDetails {
+
 	public CustomUserDetail(User user) {
 		super(user);
 	}
@@ -18,8 +18,9 @@ public class CustomUserDetail extends User implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		super.getRoles().forEach(role ->{
+		super.getRoles().forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role.getName()));
+			System.out.println(role.getName());
 		});
 		return authorities;
 	}
@@ -27,10 +28,9 @@ public class CustomUserDetail extends User implements UserDetails{
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		
 		return super.getEmail();
 	}
-	
+
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
@@ -57,7 +57,6 @@ public class CustomUserDetail extends User implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-
 		return true;
 	}
 

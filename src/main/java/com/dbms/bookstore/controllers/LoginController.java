@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-import javax.sql.rowset.serial.SerialException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import com.dbms.bookstore.global.GlobalData;
 import com.dbms.bookstore.model.Role;
 import com.dbms.bookstore.model.User;
@@ -33,9 +30,18 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public String login() {
-		GlobalData.cart.clear();
+		GlobalData.cart.clear();	
 		return "login";
 	}
+	
+//	@PostMapping("/login")
+//	public String loginpost(@RequestBody String email,@RequestBody String password) {
+////		GlobalData.cart.clear();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        System.out.println("Login page "+authentication.getName());
+//        System.out.println(email+" == "+password);
+//		return "redirect:/";
+//	}
 
 	@GetMapping("/register")
 	public String register() {

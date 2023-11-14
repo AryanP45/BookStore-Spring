@@ -1,7 +1,5 @@
 package com.dbms.bookstore.dao;
 
-import com.dbms.bookstore.model.Category;
-
 import lombok.Data;
 
 @Data

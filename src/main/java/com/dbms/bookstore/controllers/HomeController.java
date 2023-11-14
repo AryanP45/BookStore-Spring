@@ -1,14 +1,14 @@
 package com.dbms.bookstore.controllers;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import com.dbms.bookstore.dao.ProductDao;
-import com.dbms.bookstore.global.GlobalData;
-import com.dbms.bookstore.model.Product;
+import com.dbms.bookstore.global.GlobalData;	
 import com.dbms.bookstore.services.CategoryService;
 import com.dbms.bookstore.services.ProductService;
 
@@ -22,6 +22,8 @@ public class HomeController {
 	@GetMapping({"/","/home"})
 	public String home(Model model) {
 		model.addAttribute("cartCount",GlobalData.cart.size());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Home page "+authentication.getName());
 		return "index";
 	}
 	
@@ -43,18 +45,7 @@ public class HomeController {
 	
 	@GetMapping("/shop/viewproduct/{id}")
 	public String viewProduct(@PathVariable Long id,Model model) {
-		model.addAttribute("cartCount",GlobalData.cart.size());
-		
-//		Product product=productService.getProductById(id).get();
-//		ProductDao productDao = new ProductDao();
-//		productDao.setId(id);
-//		productDao.setName(product.getName());
-//		productDao.setDescription(product.getDescription());
-//		productDao.setWeight(product.getWeight());
-//		productDao.setCategoryId(product.getCategory().getId());
-//		productDao.setPrice(product.getPrice());
-//		productDao.setImageName(product.getImageName());
-		
+		model.addAttribute("cartCount",GlobalData.cart.size());		
 		model.addAttribute("product",productService.getProductById(id).get());
 		return "viewProduct";
 	}
