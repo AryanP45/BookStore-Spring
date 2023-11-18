@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
@@ -31,6 +32,11 @@ public class SecurityConfig {
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new CustomUserDetailsService();
+	}
 
 	@Bean
 	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
@@ -50,7 +56,7 @@ public class SecurityConfig {
 
 						.formLogin(login -> login.loginPage("/login").permitAll().failureUrl("/login?error=true")
 								.usernameParameter("email").passwordParameter("password"))
-
+						
 						.logout(logout -> logout.logoutRequestMatcher(mvc.pattern("/logout")).logoutSuccessUrl("/login")
 								.invalidateHttpSession(true).deleteCookies("JSESSIONID"))
 

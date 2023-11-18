@@ -33,15 +33,6 @@ public class LoginController {
 		GlobalData.cart.clear();	
 		return "login";
 	}
-	
-//	@PostMapping("/login")
-//	public String loginpost(@RequestBody String email,@RequestBody String password) {
-////		GlobalData.cart.clear();
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println("Login page "+authentication.getName());
-//        System.out.println(email+" == "+password);
-//		return "redirect:/";
-//	}
 
 	@GetMapping("/register")
 	public String register() {

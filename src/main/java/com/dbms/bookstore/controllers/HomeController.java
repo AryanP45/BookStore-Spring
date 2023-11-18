@@ -29,9 +29,12 @@ public class HomeController {
 	
 	@GetMapping("/shop")
 	public String shop(Model model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Home page "+authentication.getName());
 		model.addAttribute("cartCount",GlobalData.cart.size());
 		model.addAttribute("categories",categoryService.getAllCategories());
 		model.addAttribute("products",productService.getAllProduct());
+		System.out.println("cartcountt : "+GlobalData.cart.size());
 		return "shop";
 	}
 	
