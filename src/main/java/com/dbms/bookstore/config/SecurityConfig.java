@@ -26,13 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 //@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
+	
 	@Autowired
-	CustomUserDetailsService customUserDetailsService;
+	UserDetailsService userDetailsService;
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
-	
+
 	@Bean
 	UserDetailsService userDetailsService() {
 		return new CustomUserDetailsService();
@@ -43,45 +43,69 @@ public class SecurityConfig {
 		return new MvcRequestMatcher.Builder(introspector);
 	}
 
+//	@Bean
+//	SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+//
+//		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable()).authorizeHttpRequests((authz) -> {
+//			try {
+//				authz.requestMatchers(mvc.pattern("/"), mvc.pattern("/shop/**"), mvc.pattern("/register/**"),
+//						mvc.pattern("/images/**"), mvc.pattern("/productImages/**")).permitAll()
+//
+//						.requestMatchers(mvc.pattern("/cart/**"), mvc.pattern("/checkout")).hasRole("USER")
+//						.requestMatchers(mvc.pattern("/admin")).hasRole("ADMIN").anyRequest().authenticated().and()
+//
+//						.formLogin(login -> login.loginPage("/login").permitAll().failureUrl("/login?error=true")
+//								.usernameParameter("email").passwordParameter("password"))
+//						
+//						.logout(logout -> logout.logoutRequestMatcher(mvc.pattern("/logout")).logoutSuccessUrl("/login")
+//								.invalidateHttpSession(true).deleteCookies("JSESSIONID"))
+//
+//						.exceptionHandling(withDefaults());
+//			} catch (Exception e) {
+//				System.out.println("error in auth");
+//				e.printStackTrace();
+//			}
+//		}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//				.httpBasic(Customizer.withDefaults());
+//
+//		return http.build();
+//	}
+	
+
+//	@Bean
+//	AuthenticationProvider authenticationProvider() {
+//		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//		authenticationProvider.setUserDetailsService(customUserDetailsService);
+//		authenticationProvider.setPasswordEncoder(encoder);
+//		return authenticationProvider;
+//	}
+
+	@SuppressWarnings("removal")
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-
-		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable()).authorizeHttpRequests((authz) -> {
+		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests((auth) -> {
 			try {
-				authz.requestMatchers(mvc.pattern("/"), mvc.pattern("/shop/**"), mvc.pattern("/register/**"),
-						mvc.pattern("/images/**"), mvc.pattern("/productImages/**")).permitAll()
-
-						.requestMatchers(mvc.pattern("/cart/**"), mvc.pattern("/checkout")).hasRole("USER")
-						.requestMatchers(mvc.pattern("/admin")).hasRole("ADMIN").anyRequest().authenticated().and()
-
-						.formLogin(login -> login.loginPage("/login").permitAll().failureUrl("/login?error=true")
-								.usernameParameter("email").passwordParameter("password"))
-						
-						.logout(logout -> logout.logoutRequestMatcher(mvc.pattern("/logout")).logoutSuccessUrl("/login")
-								.invalidateHttpSession(true).deleteCookies("JSESSIONID"))
-
-						.exceptionHandling(withDefaults());
+				auth.requestMatchers(mvc.pattern("/"),mvc.pattern("/logout"), mvc.pattern("/data"), mvc.pattern("/shop/**"),
+						mvc.pattern("/register/**"), mvc.pattern("/images/**"), mvc.pattern("/productImages/**"))
+				.permitAll()
+				.requestMatchers(mvc.pattern("/cart/**"), mvc.pattern("/checkout/**")).hasRole("USER")
+				.requestMatchers(mvc.pattern("/admin/**")).hasAnyRole("ADMIN")
+				.anyRequest().authenticated().and()
+				.formLogin(withDefaults()).exceptionHandling(withDefaults());
 			} catch (Exception e) {
-				System.out.println("error in auth");
 				e.printStackTrace();
 			}
-		}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.httpBasic(Customizer.withDefaults());
-
+		});
+		
 		return http.build();
 	}
-
+	
 	@Bean
-	AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(customUserDetailsService);
-		authenticationProvider.setPasswordEncoder(encoder);
-		return authenticationProvider;
-	}
-
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
-		return builder.getAuthenticationManager();
+	DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+		auth.setUserDetailsService(userDetailsService);
+		auth.setPasswordEncoder(encoder);
+		return auth;
 	}
 
 }
