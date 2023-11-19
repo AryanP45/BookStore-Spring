@@ -8,7 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import com.dbms.bookstore.global.GlobalData;	
+import com.dbms.bookstore.global.GlobalData;
+import com.dbms.bookstore.model.User;
+import com.dbms.bookstore.repository.UserRepository;
+import com.dbms.bookstore.services.CartService;
 import com.dbms.bookstore.services.CategoryService;
 import com.dbms.bookstore.services.ProductService;
 
@@ -18,12 +21,22 @@ public class HomeController {
 	CategoryService categoryService;
 	@Autowired
 	ProductService productService;
+	@Autowired
+	UserRepository userRepository;
 	
-	@GetMapping({"/","/home"})
+	@GetMapping(path = {"/","/home"})
 	public String home(Model model) {
-		model.addAttribute("cartCount",GlobalData.cart.size());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Home page "+authentication.getName());
+        
+        //authenticated user
+        if(authentication.getName()!=null) {
+        	System.out.println(authentication.getPrincipal());
+    		User user = userRepository.findUserByEmail(authentication.getName()).get();
+    		GlobalData.cart.addAll(user.getCartProducts());
+        }
+        
+        model.addAttribute("cartCount",GlobalData.cart.size());
 		return "index";
 	}
 	
