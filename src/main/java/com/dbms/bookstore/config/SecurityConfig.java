@@ -2,14 +2,10 @@ package com.dbms.bookstore.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -70,28 +66,30 @@ public class SecurityConfig {
 //
 //		return http.build();
 //	}
-	
-
-//	@Bean
-//	AuthenticationProvider authenticationProvider() {
-//		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//		authenticationProvider.setUserDetailsService(customUserDetailsService);
-//		authenticationProvider.setPasswordEncoder(encoder);
-//		return authenticationProvider;
-//	}
 
 	@SuppressWarnings("removal")
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests((auth) -> {
 			try {
-				auth.requestMatchers(mvc.pattern("/"),mvc.pattern("/logout"), mvc.pattern("/data"), mvc.pattern("/shop/**"),
-						mvc.pattern("/register/**"), mvc.pattern("/images/**"), mvc.pattern("/productImages/**"))
-				.permitAll()
-				.requestMatchers(mvc.pattern("/cart/**"), mvc.pattern("/checkout/**")).hasRole("USER")
-				.requestMatchers(mvc.pattern("/admin/**")).hasAnyRole("ADMIN")
-				.anyRequest().authenticated().and()
-				.formLogin(withDefaults()).exceptionHandling(withDefaults());
+                auth.requestMatchers(mvc.pattern("/"), mvc.pattern("/shop/**"),
+                        mvc.pattern("/register/**"), mvc.pattern("/images/**"), mvc.pattern("/productImages/**"))
+                        .permitAll()
+                        .requestMatchers(mvc.pattern("/cart/**"), mvc.pattern("/checkout/**")).hasRole("USER")
+                        .requestMatchers(mvc.pattern("/admin/**")).hasAnyRole("ADMIN")
+                        .anyRequest().authenticated().and()
+                        .formLogin(login -> login
+                                .loginPage("/login")
+                                .permitAll()
+                                .usernameParameter("email")
+                                .passwordParameter("password")
+                                .successForwardUrl("/home")
+                                .failureUrl("/login?error=true"))
+                        .logout(logout -> logout
+                                .permitAll()
+                                .logoutRequestMatcher(mvc.pattern("/logout"))
+                                .logoutSuccessUrl("/login"))
+                        .exceptionHandling(withDefaults());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
