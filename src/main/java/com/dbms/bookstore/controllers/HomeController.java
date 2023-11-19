@@ -1,6 +1,5 @@
 package com.dbms.bookstore.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.dbms.bookstore.global.GlobalData;
 import com.dbms.bookstore.model.User;
 import com.dbms.bookstore.repository.UserRepository;
-import com.dbms.bookstore.services.CartService;
 import com.dbms.bookstore.services.CategoryService;
 import com.dbms.bookstore.services.ProductService;
 
@@ -23,48 +21,47 @@ public class HomeController {
 	ProductService productService;
 	@Autowired
 	UserRepository userRepository;
-	
-	@GetMapping(path = {"/","/home"})
+
+	@GetMapping(path = { "/", "/home" })
 	public String home(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Home page "+authentication.getName());
-        
-        //authenticated user
-        if(authentication.getName()!=null) {
-        	System.out.println(authentication.getPrincipal());
-    		User user = userRepository.findUserByEmail(authentication.getName()).get();
-    		GlobalData.cart.addAll(user.getCartProducts());
-        }
-        
-        model.addAttribute("cartCount",GlobalData.cart.size());
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println("Home page " + authentication.getName());
+
+		// authenticated user
+		if (authentication.getName() != null && GlobalData.cart.isEmpty()) {
+			System.out.println(authentication.getPrincipal());
+			User user = userRepository.findUserByEmail(authentication.getName()).get();
+			GlobalData.cart.addAll(user.getCartProducts());
+		}
+
+		model.addAttribute("cartCount", GlobalData.cart.size());
 		return "index";
 	}
-	
+
 	@GetMapping("/shop")
 	public String shop(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Home page "+authentication.getName());
-		model.addAttribute("cartCount",GlobalData.cart.size());
-		model.addAttribute("categories",categoryService.getAllCategories());
-		model.addAttribute("products",productService.getAllProduct());
-		System.out.println("cartcountt : "+GlobalData.cart.size());
+		System.out.println("Home page " + authentication.getName());
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("categories", categoryService.getAllCategories());
+		model.addAttribute("products", productService.getAllProduct());
+		System.out.println("cartcountt : " + GlobalData.cart.size());
 		return "shop";
 	}
-	
+
 	@GetMapping("/shop/category/{id}")
-	public String shopByCategory(@PathVariable int id,Model model) {
-		model.addAttribute("cartCount",GlobalData.cart.size());
-		model.addAttribute("categories",categoryService.getAllCategories());
-		model.addAttribute("products",productService.getAllProductsByCategoryId(id));
+	public String shopByCategory(@PathVariable int id, Model model) {
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("categories", categoryService.getAllCategories());
+		model.addAttribute("products", productService.getAllProductsByCategoryId(id));
 		return "shop";
 	}
-	
+
 	@GetMapping("/shop/viewproduct/{id}")
-	public String viewProduct(@PathVariable Long id,Model model) {
-		model.addAttribute("cartCount",GlobalData.cart.size());		
-		model.addAttribute("product",productService.getProductById(id).get());
+	public String viewProduct(@PathVariable Long id, Model model) {
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("product", productService.getProductById(id).get());
 		return "viewProduct";
 	}
-	
-	
+
 }

@@ -2,6 +2,7 @@ package com.dbms.bookstore.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,6 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-//	@Column(name = "book_name")
 	private String name;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -27,7 +27,7 @@ public class Product {
 	private Category category;
 	
 	private Double price;
-	private Double weight;
+	private Double pages;
 	private String description;
 	private String imageName;
 	
@@ -64,11 +64,11 @@ public class Product {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public Double getWeight() {
-		return weight;
+	public Double getpages() {
+		return pages;
 	}
-	public void setWeight(Double weight) {
-		this.weight = weight;
+	public void setpages(Double pages) {
+		this.pages = pages;
 	}
 	public String getDescription() {
 		return description;
