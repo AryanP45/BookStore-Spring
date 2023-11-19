@@ -1,11 +1,14 @@
 package com.dbms.bookstore.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
@@ -27,6 +30,16 @@ public class Product {
 	private Double weight;
 	private String description;
 	private String imageName;
+	
+	@ManyToMany(mappedBy = "cartProducts")
+	private List<User> users;
+	
+	List<User> getUsers() {
+		return users;
+	}
+	void setUsers(List<User> users) {
+		this.users = users;
+	}
 	public Long getId() {
 		return id;
 	}
