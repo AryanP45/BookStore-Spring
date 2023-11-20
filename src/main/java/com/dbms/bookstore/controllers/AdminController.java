@@ -101,7 +101,7 @@ public class AdminController {
 		product.setCategory(categoryService.getCategoryById(productDao.getCategoryId()).get());
 		product.setPrice(productDao.getPrice());
 		product.setDescription(productDao.getDescription());
-		product.setpages(productDao.getWeight());
+		product.setPages(productDao.getPages());
 		String imageUUID;
 		if(!file.isEmpty()) {
 			imageUUID = file.getOriginalFilename();
@@ -134,7 +134,7 @@ public class AdminController {
 		productDao.setId(id);
 		productDao.setName(product.getName());
 		productDao.setDescription(product.getDescription());
-		productDao.setWeight(product.getpages());
+		productDao.setPages(product.getPages());
 		productDao.setCategoryId(product.getCategory().getId());
 		productDao.setPrice(product.getPrice());
 		productDao.setImageName(product.getImageName());
