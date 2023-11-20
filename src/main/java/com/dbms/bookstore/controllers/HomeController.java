@@ -25,13 +25,20 @@ public class HomeController {
 	@GetMapping(path = { "/", "/home" })
 	public String home(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("Home page " + authentication.getName());
-
+		
 		// authenticated user
-		if (authentication.getName() != null && GlobalData.cart.isEmpty()) {
+		if (authentication.isAuthenticated()) {
 			System.out.println(authentication.getPrincipal());
-			User user = userRepository.findUserByEmail(authentication.getName()).get();
-			GlobalData.cart.addAll(user.getCartProducts());
+			try {
+				User user= userRepository.findUserByEmail(authentication.getName()).get();
+				if(GlobalData.cart.isEmpty())
+				GlobalData.cart.addAll(user.getCartProducts());
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				System.out.println("NO user found with given email id");
+			}
 		}
 
 		model.addAttribute("cartCount", GlobalData.cart.size());
