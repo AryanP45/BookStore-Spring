@@ -23,11 +23,9 @@ public class CartController {
 		
 	@GetMapping("/cart")
 	public String cart(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		model.addAttribute("cartCount",GlobalData.cart.size());
 		model.addAttribute("total",GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
 		model.addAttribute("cart",GlobalData.cart);
-        System.out.println("Cart page "+authentication.getName());
 		return "cart";
 	}
 	
