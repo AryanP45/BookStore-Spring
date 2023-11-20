@@ -8,7 +8,7 @@ public class ProductDao {
 	private String name;
 	private int categoryId;
 	private Double price;
-	private Double weight;
+	private Integer pages;
 	private String description;
 	private String imageName;
 	public Long getId() {
@@ -35,11 +35,11 @@ public class ProductDao {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public Double getWeight() {
-		return weight;
+	public Integer getPages() {
+		return pages;
 	}
-	public void setWeight(Double weight) {
-		this.weight = weight;
+	public void setPages(Integer pages) {
+		this.pages = pages;
 	}
 	public String getDescription() {
 		return description;

@@ -27,7 +27,7 @@ public class Product {
 	private Category category;
 	
 	private Double price;
-	private Double pages;
+	private Integer pages;
 	private String description;
 	private String imageName;
 	
@@ -64,10 +64,10 @@ public class Product {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public Double getpages() {
+	public Integer getPages() {
 		return pages;
 	}
-	public void setpages(Double pages) {
+	public void setPages(Integer pages) {
 		this.pages = pages;
 	}
 	public String getDescription() {
