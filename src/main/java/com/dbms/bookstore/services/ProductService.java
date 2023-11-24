@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.dbms.bookstore.model.Product;
@@ -28,4 +29,8 @@ public class ProductService {
 	public List<Product> getAllProductsByCategoryId(int id){
 		return productRepository.findAllByCategory_Id(id);
 	}
+	public List<Product> getSearchedProducts(String searchString) {
+		return productRepository.getSearchedProducts(searchString);
+	}
+
 }
