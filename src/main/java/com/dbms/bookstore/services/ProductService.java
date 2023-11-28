@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 import com.dbms.bookstore.model.Product;
 import com.dbms.bookstore.repository.ProductRepository;
 
+import jakarta.persistence.EntityManager;
+
 @Service
 public class ProductService {
 	@Autowired
 	ProductRepository productRepository;
+	@Autowired
+	EntityManager entityManager;
+	
 	public List<Product> getAllProduct(){
 		return productRepository.findAll();
 	}
@@ -30,7 +35,17 @@ public class ProductService {
 		return productRepository.findAllByCategory_Id(id);
 	}
 	public List<Product> getSearchedProducts(String searchString) {
+		// code for finding products based on search string from user
+		
 		return productRepository.getSearchedProducts(searchString);
+	}
+	public List<Product> getProductsByPage(int pageno,int pageSize){
+		int offset = (pageno - 1) * pageSize;
+
+	    return entityManager.createQuery("SELECT p FROM Product p", Product.class)
+	            .setFirstResult(offset)
+	            .setMaxResults(pageSize)
+	            .getResultList();
 	}
 
 }
