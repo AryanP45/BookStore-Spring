@@ -38,13 +38,12 @@ public class HomeController {
 				User user = userRepository.findUserByEmail(authentication.getName()).get();
 				if (GlobalData.cart.isEmpty())
 					GlobalData.cart.addAll(user.getCartProducts());
-
 			} catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
 				System.out.println("NO user found with given email id");
 			}
 		}
+		System.out.println(authentication.getName());
 
 		model.addAttribute("cartCount", GlobalData.cart.size());
 		return "index";
@@ -56,17 +55,45 @@ public class HomeController {
 		System.out.println("Home page " + authentication.getName());
 		model.addAttribute("cartCount", GlobalData.cart.size());
 		model.addAttribute("categories", categoryService.getAllCategories());
+		model.addAttribute("pageno",1);
 		System.out.println("cartcountt : " + GlobalData.cart.size());
 		List<Product> products;
 		if(search == null) {
-			products = productService.getAllProduct();
+//			products = productService.getAllProduct();
+			products = productService.getProductsByPage(1,10);			
 			System.out.println("Showing All products!!");
 		}else {
 			products = productService.getSearchedProducts(search);
 			System.out.println("Results searched for "+search);
 		}
 		if(products.isEmpty())
-			System.out.println("NO RESULTS FOUND");
+			System.out.println("NO RESULTS FUND");
+		else {
+			model.addAttribute("products",products);
+		}
+		
+		return "shop";
+	}
+	
+	//showing products by size
+	@GetMapping("/shop/{pageno}")
+	public String shopPages(@PathVariable int pageno,Model model,@RequestParam(required = false) String search) {
+		if(pageno < 1) return "redirect:/shop";
+		if(pageno > 6) return "redirect:/shop/6";
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("categories", categoryService.getAllCategories());
+		model.addAttribute("pageno",pageno);
+		List<Product> products;
+		if(search == null) {
+			// fetch products by pageNumber
+			products = productService.getProductsByPage(pageno,10);			
+			System.out.println("Showing All products!!");
+		}else {
+			products = productService.getSearchedProducts(search);
+			System.out.println("Results searched for "+search);
+		}
+		if(products.isEmpty())
+			System.out.println("NO RESULTS FUND");
 		else {
 			model.addAttribute("products",products);
 		}
@@ -78,6 +105,7 @@ public class HomeController {
 	public String shopByCategory(@PathVariable int id, Model model) {
 		model.addAttribute("cartCount", GlobalData.cart.size());
 		model.addAttribute("categories", categoryService.getAllCategories());
+		model.addAttribute("pageno",1);
 		model.addAttribute("products", productService.getAllProductsByCategoryId(id));
 		return "shop";
 	}
@@ -89,6 +117,5 @@ public class HomeController {
 		return "viewProduct";
 	}
 
-//	@GetMapping("/shop")
 
 }
